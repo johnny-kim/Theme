@@ -32,9 +32,7 @@ module.exports = {
   },
   plugins: [
     new UglifyJSPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Output Management',
-    }),
+    new HtmlWebpackPlugin(),
     new CleanWebpackPlugin(['dist']),
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
