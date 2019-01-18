@@ -12,6 +12,9 @@ module.exports = {
   entry: './src/index.js',
   devtool: 'source-map',
   devServer: {
+    inline: true,
+    hot: true,
+    port: 3000,
     contentBase: './dist',
   },
   module: {
@@ -25,14 +28,29 @@ module.exports = {
         ],
       },
       {
+        test: /\.(png|jpg|gif)$/i,
+        use: [{
+         loader: 'url-loader',
+        }],
+      },
+      {
         test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
         use: ['file-loader'],
+      },
+      {
+        test: /\.(html)$/,
+        use: [{
+          loader: 'html-loader',
+        }],
       },
     ],
   },
   plugins: [
     new UglifyJSPlugin(),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+      // template: './pages/template/template.html'
+    }),
     new CleanWebpackPlugin(['dist']),
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
@@ -44,10 +62,13 @@ module.exports = {
   ],
   output: {
     filename: devMode ? '[name].[hash].js' : '[name].[hash].js',
+    chunkFilename: devMode ? '[name].[chunkhash].js' : '[name].[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: './',
   },
   optimization: {
+    removeAvailableModules: false,
+    removeEmptyChunks: false,
     splitChunks: {
       cacheGroups: {
         vendors: {
