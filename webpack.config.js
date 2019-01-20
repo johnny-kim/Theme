@@ -9,13 +9,17 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
-  entry: './src/index.js',
+  entry: {
+    application: './src/index.js'
+  },
+  // entry: join(__dirname, 'src', 'index.js'),
   devtool: 'source-map',
   devServer: {
     inline: true,
     hot: true,
-    port: 3000,
-    contentBase: './dist',
+    // contentBase: './dist',
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
   },
   module: {
     rules: [
@@ -35,7 +39,9 @@ module.exports = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
-        use: ['file-loader'],
+        use: [{
+          loader: 'file-loader',
+        }],
       },
       {
         test: /\.(html)$/,
@@ -48,22 +54,24 @@ module.exports = {
   plugins: [
     new UglifyJSPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html'
-      // template: './pages/template/template.html'
+      // template: './src/index.html',
+      // filename: join(__dirname, 'dist', 'index.html'),
+      filename: 'index.html',
+      template: './src/assets/index.html',
     }),
     new CleanWebpackPlugin(['dist']),
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: devMode ? '[name].[hash].css' : '[name].[hash].css',
-      chunkFilename: devMode ? '[id].[hash].css' : '[id].[hash].css',
+      filename: devMode ? '[name]-[hash].css' : '[name]-[hash].css',
+      chunkFilename: devMode ? '[id]-[hash].css' : '[id]-[hash].css',
     }),
   ],
   output: {
-    filename: devMode ? '[name].[hash].js' : '[name].[hash].js',
-    chunkFilename: devMode ? '[name].[chunkhash].js' : '[name].[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
+    filename: devMode ? '[name]-[hash].js' : '[name]-[hash].js',
+    chunkFilename: devMode ? '[name]-[chunkhash].js' : '[name]-[chunkhash].js',
     publicPath: './',
   },
   optimization: {
